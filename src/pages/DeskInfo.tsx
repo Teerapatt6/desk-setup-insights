@@ -1,16 +1,13 @@
-
 import { useState, useEffect } from 'react';
 import { ChevronRight, Home, Settings, BarChart3, Lightbulb, Check, Clock, User } from 'lucide-react';
 import Navbar from "../components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import DeskDetails from "./DeskDetail";
+import DeskDetails from "./DeskDetails";
 import Preferences from "./Preferences";
 import Summary from "./Summary";
 import Suggestions from "./Suggestions";
-import { DeskDetail, Preferences as PreferencesType, DeskSetupData } from "../api/setup";
-
-type PageType = "desk-details" | "preferences" | "summary" | "suggestions";
+import { DeskDetail, Preferences as PreferencesType, DeskSetupData, PageType } from "../api/setup";
 
 const DeskInfo = () => {
   const [activePage, setActivePage] = useState<PageType>("desk-details");
