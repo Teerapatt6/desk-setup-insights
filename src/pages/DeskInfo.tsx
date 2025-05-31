@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ChevronRight, Home, Settings, BarChart3, Lightbulb, Check, Clock, User } from 'lucide-react';
 import Navbar from "../components/Navbar";
@@ -61,12 +62,6 @@ const DeskInfo = () => {
   ];
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setError("Please log in to access desk setup");
-      return;
-    }
-    
     setError(null);
     const timer = setTimeout(() => setIsLoaded(true), 300);
     return () => clearTimeout(timer);
@@ -117,28 +112,6 @@ const DeskInfo = () => {
     }
     return <Icon className="w-5 h-5 text-gray-400" />;
   };
-
-  if (error && !localStorage.getItem("authToken")) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50">
-        <Navbar />
-        <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
-          <Card className="w-full max-w-md">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                <User className="w-6 h-6 text-red-600" />
-              </div>
-              <CardTitle className="text-red-600">Authentication Required</CardTitle>
-              <CardDescription>{error}</CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-gray-500 text-sm">Please log in to access the desk setup feature.</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50">
@@ -197,7 +170,7 @@ const DeskInfo = () => {
         </div>
 
         {/* Error Display */}
-        {error && localStorage.getItem("authToken") && (
+        {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-center">
             {error}
           </div>
