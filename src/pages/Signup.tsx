@@ -8,23 +8,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const Login = () => {
+const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [userName, setUserName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    // Input validation
-    if (!email || !password) {
-      setError("Please enter both email and password");
+    // Simple validation
+    if (!email || !password || !confirmPassword || !userName) {
+      setError("Please fill in all fields");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
       setIsLoading(false);
       return;
     }
@@ -34,20 +43,20 @@ const Login = () => {
       setTimeout(() => {
         localStorage.setItem("authToken", "demo-token");
         localStorage.setItem("userRole", "user");
-        localStorage.setItem("userName", "Demo User");
+        localStorage.setItem("userName", userName);
         localStorage.setItem("isLoggedIn", "true");
-        
+
         toast({
           title: "Success",
-          description: "Logged in successfully",
+          description: "Account created successfully! Welcome to SetDesk!",
         });
-        
+
         navigate("/");
         setIsLoading(false);
       }, 1000);
-    } catch (error: unknown) {
-      console.error("Login error:", error);
-      setError("Login failed. Please try again.");
+    } catch (error) {
+      console.error("Signup error:", error);
+      setError("Signup failed. Please try again.");
       setIsLoading(false);
     }
   };
@@ -62,10 +71,10 @@ const Login = () => {
             <User className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
-            Welcome Back
+            Join SetDesk
           </CardTitle>
           <CardDescription className="text-gray-600">
-            Sign in to your SetDesk account
+            Create your account to get started
           </CardDescription>
         </CardHeader>
 
@@ -76,7 +85,24 @@ const Login = () => {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleSignup} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="userName" className="text-sm font-medium text-gray-700">
+                Full Name
+              </Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="userName"
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="pl-10 h-12 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
+                  placeholder="John Doe"
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-gray-700">
                 Email Address
@@ -124,6 +150,36 @@ const Login = () => {
               </div>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
+                Confirm Password
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="pl-10 pr-10 h-12 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
+                  placeholder="••••••••"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-0 top-0 h-12 px-3 hover:bg-transparent"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <Eye className="w-5 h-5 text-gray-400" />
+                  )}
+                </Button>
+              </div>
+            </div>
+
             <Button
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
@@ -132,22 +188,22 @@ const Login = () => {
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="w-5 h-5 border-t-2 border-r-2 border-white rounded-full animate-spin mr-2"></div>
-                  Signing in...
+                  Creating account...
                 </div>
               ) : (
-                "Sign In"
+                "Create Account"
               )}
             </Button>
           </form>
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
-                to="/signup"
+                to="/login"
                 className="text-orange-600 hover:text-orange-700 font-medium hover:underline transition-colors"
               >
-                Create one here
+                Sign in here
               </Link>
             </p>
           </div>
@@ -157,4 +213,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
